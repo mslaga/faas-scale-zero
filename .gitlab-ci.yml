@@ -1,0 +1,39 @@
+stages:
+  - build
+  - deploy
+
+build_release:
+  stage: build
+  script:
+    - dotnet build -c Release
+  tags:
+    - macos
+
+publish:
+  stage: deploy
+  when: manual
+  only:
+    - /^v[0-9]+[.][0-9]+[.][0-9]+(-+.+)*$/
+  except:
+    - branches
+  environment:
+    name: Production
+  script:
+    - pushd faasSzero
+    - ./publish.sh VERSION="$CI_COMMIT_TAG}" DOCKER_REPO="${PUBLISH_DOCKER_REPO}"
+    - popd
+  artifacts:
+    name: Release
+    paths:
+      - faasSzero-*
+    expire_in: 1 year
+  release:
+    name: $CI_COMMIT_TAG
+    tag_name: $CI_COMMIT_TAG
+    description: "- [Release.zip]($CI_PROJECT_URL/-/jobs/artifacts/$CI_COMMIT_TAG/download?job=publish)"
+    assets:
+      links:
+        - name: Release.zip
+          url: $CI_PROJECT_URL/-/jobs/artifacts/$CI_COMMIT_TAG/download?job=publish
+  tags:
+    - macos

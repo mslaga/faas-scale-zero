@@ -1,0 +1,10 @@
+{
+    "name": "faas-scale-zero",
+    "version": "1.0.0",
+    "description": "",
+    "author": "Michał Ślaga",
+    "main": "dotnet",
+    "scripts": {
+      "start": "dotnet faasSzero.dll"
+    }
+  }

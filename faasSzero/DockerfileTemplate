@@ -1,0 +1,16 @@
+FROM  alpine:latest
+
+RUN apk add --no-cache \
+        # .NET Core dependencies
+        krb5-libs \
+        libssl1.1 \
+        libstdc++
+
+
+COPY ./bin/Release/netcoreapp5.0/#arch#/publish/faasSzero App/
+WORKDIR /App
+RUN chmod +x ./faasSzero
+
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
+
+ENTRYPOINT ["./faasSzero"]
